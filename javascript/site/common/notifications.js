@@ -31,15 +31,15 @@ var notifications = (function ($, UTIL) {
 
             if (!that.el.is(':visible')) {
                 that.el.slideDown(that.animDuration, function () {
-                    that.showTimeout = setTimeout(jQuery.proxy(that.hide, that), that.hideDelay);
+                    that.showTimeout = setTimeout($.proxy(that.hide, that), that.hideDelay);
                 });
             } else {
                 clearTimeout(that.showTimeout);
-                that.showTimeout = setTimeout(jQuery.proxy(that.hide, that), that.hideDelay);
+                that.showTimeout = setTimeout($.proxy(that.hide, that), that.hideDelay);
             }
         },
         hide : function () {
-            this.el.slideUp(this.animDuration, jQuery.proxy(this.destroy, this));
+            this.el.slideUp(this.animDuration, $.proxy(this.destroy, this));
         },
         destroy : function (forceDestroy) {
             // TODO: unbind click on hide btn when implemented
