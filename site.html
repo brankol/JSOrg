@@ -5,10 +5,13 @@
     <title>new.js</title>
     <style>
         .notification_holder { position: fixed; right: 10px; top: 0; }
-            .notification { width: 300px; margin: 10px 0; padding: 10px; }
-                .notification.info { background: yellow; color: black; }
-                .notification.success { background: green; color: white; }
-                .notification.error { background: red; color: white; }
+            .mod { position: relative; }
+                .notification { width: 300px; margin: 10px 0; }
+                    .notification .inner { padding: 10px; }
+                    .notification.info .inner { background: yellow; color: black; }
+                    .notification.success .inner { background: green; color: white; }
+                    .notification.error .inner { background: red; color: white; }
+                    .js_notification_hide { position: absolute; right: 0; top: 0; display: block; padding: 5px; cursor: pointer; }
     </style>
 
     <!-- Perhaps bootstrap isn't the best name... -->

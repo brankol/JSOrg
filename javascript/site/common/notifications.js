@@ -9,22 +9,24 @@ var notifications = (function ($, UTIL) {
     function Notification(id, content, type, container, animDuration, hideDelay) {
         this.id = id;
         this.el = this.createDom(content, type).appendTo(container).hide(); // BUG: Webkit has issues with sliding hidden elements; fading works though
+        this.hideBtn = this.el.find('.js_notification_hide');
         this.animDuration = animDuration;
         this.hideDelay = hideDelay;
         this.showTimeout = 0;
 
+        this.hideBtn.bind('click', $.proxy(this.hide, this));
         this.show();
     }
 
     Notification.prototype = {
         // TODO: sticky option, hide button, pull template out and consider a proper templating solution
         // TODO: some kind of aria attribute so screen readers get notified?
-        template : '<div class="notification {TYPE}">{CONTENT}</div>', // FIXME: should be based on SMF
+        template : '<div class="mod notification info {TYPE}"><div class="inner"><div class="bd">{BODY}</div><div class="ft"><span class="js_notification_hide">X</span></div></div></div>',
         createDom : function (content, type) {
             // FIXME: types should be configurable and mapped to CSS classes
             // types: success, error, info, system, other
-            // TODO: Subscribe channel should be /notification/success
-            return $(this.template.replace('{CONTENT}', content).replace('{TYPE}', /^(success|error|info)$/.test(type) ? type : 'info'));
+            // TODO: subscribe channel should be /notification/success
+            return $(this.template.replace('{BODY}', content).replace('{TYPE}', /^(success|error|info)$/.test(type) ? type : 'info'));
         },
         show : function () {
             var that = this;
@@ -42,7 +44,7 @@ var notifications = (function ($, UTIL) {
             this.el.slideUp(this.animDuration, $.proxy(this.destroy, this));
         },
         destroy : function (forceDestroy) {
-            // TODO: unbind click on hide btn when implemented
+            this.hideBtn.unbind('click');
             clearTimeout(this.showTimeout);
             this.el.remove();
             if (!forceDestroy) {
@@ -69,7 +71,7 @@ var notifications = (function ($, UTIL) {
         // FIXME: model data in a better way? data.body perhaps? data.head?
         // FIXME: 6 arguments! seriously?!
         // IDEA: perhaps form a bridge with the DOM element?
-        instances[id] = new Notification(id, data.text, data.type, holder, publicApi.animDuration, publicApi.hideDelay);
+        instances[id] = new Notification(id, data.body, data.type, holder, publicApi.animDuration, publicApi.hideDelay);
     }
 
     function startListening() {
