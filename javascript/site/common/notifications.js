@@ -19,7 +19,7 @@ var notifications = (function ($, UTIL) {
     }
 
     Notification.prototype = {
-        // TODO: sticky option, hide button, pull template out and consider a proper templating solution
+        // TODO: pull template out and consider a proper templating solution
         // TODO: some kind of aria attribute so screen readers get notified
         template : '<div class="mod notification info {TYPE}"><div class="inner"><div class="bd">{BODY}</div><div class="ft"><span class="js_notification_hide">X</span></div></div></div>',
         createDom : function (content, type) {
@@ -51,11 +51,11 @@ var notifications = (function ($, UTIL) {
         hide : function () {
             this.el.slideUp(this.animDuration, $.proxy(this.destroy, this));
         },
-        destroy : function (forceDestroy) {
+        destroy : function (isSilent) {
             this.hideBtn.unbind('click');
             clearTimeout(this.showTimeout);
             this.el.remove();
-            if (!forceDestroy) {
+            if (!isSilent) {
                 // notify of completion, provide id
                 UTIL.publish('/notification/done', this.id);
             }
