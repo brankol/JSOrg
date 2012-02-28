@@ -14,7 +14,7 @@ APP.module = {
 
     init : function () {
         // executed on every feature of this module
-        UTIL.publish('/notification', { body : 'Welcome, user #' + APP.config.userId + '!', type : 'success'});
+        UTIL.publish('/notification', { body : 'Welcome, user #' + APP.config.userId + '!', type : 'success', sticky : true });
     },
 
     feature : function () {
