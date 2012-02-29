@@ -14,13 +14,15 @@ var notifications = (function ($, UTIL) {
         this.hideDelay = hideDelay;
         this.showTimeout = 0;
 
+        // hide notification onclick
         this.hideBtn.bind('click', $.proxy(this.hide, this));
+        // form a DOM bridge; $('.notification').data('NotificationInstance')
+        $.data(this.el[0], 'NotificationInstance', this);
         this.show(isSticky);
     }
 
     Notification.prototype = {
         // TODO: pull template out and consider a proper templating solution
-        // TODO: some kind of aria attribute so screen readers get notified
         template : '<div class="mod notification info {TYPE}"><div class="inner"><div class="bd">{BODY}</div><div class="ft"><span class="js_notification_hide">X</span></div></div></div>',
         createDom : function (content, type) {
             // FIXME: types should be configurable and mapped to CSS classes
@@ -54,10 +56,11 @@ var notifications = (function ($, UTIL) {
         destroy : function (isSilent) {
             this.hideBtn.unbind('click');
             clearTimeout(this.showTimeout);
+            $.removeData(this.el[0], 'NotificationInstance');
             this.el.remove();
             if (!isSilent) {
                 // notify of completion, provide id
-                UTIL.publish('/notification/done', this.id);
+                cleanupInstance(this.id);
             }
         }
     };
@@ -65,7 +68,8 @@ var notifications = (function ($, UTIL) {
     function createHolder() {
         // FIXME: pull template out and consider a proper templating solution
         // FIXME: attachment point should be configurable
-        holder = $('<div class="notification_holder"></div>').prependTo('body');
+        // TODO: test with screen readers!
+        holder = $('<div class="notification_holder" role="region" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>').prependTo('body');
     }
 
     function destroyHolder() {
@@ -76,9 +80,8 @@ var notifications = (function ($, UTIL) {
         var id = UTIL.generateId();
 
         // FIXME: ordering cannot be trusted (in Chrome at least) :(
-        // FIXME: model data in a better way? data.body perhaps? data.head?
-        // FIXME: 7 arguments! seriously?!
         // IDEA: perhaps form a bridge with the DOM element?
+        // FIXME: 7 arguments! seriously?!
         instances[id] = new Notification(id, data.body, data.type, data.sticky, holder, publicApi.animDuration, publicApi.hideDelay);
     }
 
@@ -90,11 +93,9 @@ var notifications = (function ($, UTIL) {
         UTIL.unsubscribe('/notification', notify);
     }
 
-    function cleanupInstance(e, id) {
+    function cleanupInstance(id) {
         delete instances[id];
     }
-
-    UTIL.subscribe('/notification/done', cleanupInstance);
 
     publicApi = {
 
