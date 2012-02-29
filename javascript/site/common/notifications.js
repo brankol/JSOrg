@@ -105,6 +105,7 @@ var notifications = (function ($, UTIL) {
         init : function () {
             if (!inited) {
                 createHolder();
+                $.data(holder[0], 'notificationsInstance', this);
                 startListening();
                 inited = true;
             }
@@ -114,6 +115,7 @@ var notifications = (function ($, UTIL) {
             if (inited) {
                 stopListening();
                 publicApi.reset();
+                $.removeData(holder[0], 'notificationsInstance');
                 destroyHolder();
                 inited = false;
             }
