@@ -3,12 +3,18 @@ var notifications = (function ($, UTIL) {
     var holder,
         inited,
         publicApi,
-        instances = {};
+        instances = {},
+        config = {
+            subChannel : '/notification',
+            parentEl : document.body,
+            animDuration : 400,
+            hideDelay : 3000
+        };
 
     // TODO: compare this approach with Object.create()
     function Notification(id, content, type, isSticky, holder, animDuration, hideDelay) {
         this.id = id;
-        this.el = this.createDom(content, type).appendTo(holder).hide(); // BUG: Webkit has issues with sliding hidden elements; fading works though
+        this.el = this.createDom(content, type).appendTo(holder).hide(); // FIXME: Webkit has issues with sliding hidden elements; fading works though
         this.hideBtn = this.el.find('.js_notification_hide');
         this.animDuration = animDuration;
         this.hideDelay = hideDelay;
@@ -25,9 +31,8 @@ var notifications = (function ($, UTIL) {
         // TODO: pull template out and consider a proper templating solution
         template : '<div class="mod notification info {TYPE}"><div class="inner"><div class="bd">{BODY}</div><div class="ft"><span class="js_notification_hide">X</span></div></div></div>',
         createDom : function (content, type) {
-            // FIXME: types should be configurable and mapped to CSS classes
-            // types: success, error, info, system, other
-            // TODO: subscribe channel should be /notification/success
+            // TODO: types should be configurable and mapped to CSS classes
+            // types: success, error, info
             return $(this.template.replace('{BODY}', content).replace('{TYPE}', /^(success|error|info)$/.test(type) ? type : 'info'));
         },
         show : function (isSticky) {
@@ -66,10 +71,9 @@ var notifications = (function ($, UTIL) {
     };
 
     function createHolder() {
-        // FIXME: pull template out and consider a proper templating solution
-        // FIXME: attachment point should be configurable
+        // TODO: pull template out and consider a proper templating solution
         // TODO: test with screen readers!
-        holder = $('<div class="notification_holder" role="region" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>').prependTo('body');
+        holder = $('<div class="notification_holder" role="region" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>').prependTo(config.parentEl);
     }
 
     function destroyHolder() {
@@ -80,17 +84,16 @@ var notifications = (function ($, UTIL) {
         var id = UTIL.generateId();
 
         // FIXME: ordering cannot be trusted (in Chrome at least) :(
-        // IDEA: perhaps form a bridge with the DOM element?
         // FIXME: 7 arguments! seriously?!
-        instances[id] = new Notification(id, data.body, data.type, data.sticky, holder, publicApi.animDuration, publicApi.hideDelay);
+        instances[id] = new Notification(id, data.body, data.type, data.sticky, holder, config.animDuration, config.hideDelay);
     }
 
     function startListening() {
-        UTIL.subscribe('/notification', notify);
+        UTIL.subscribe(config.subChannel, notify);
     }
 
     function stopListening() {
-        UTIL.unsubscribe('/notification', notify);
+        UTIL.unsubscribe(config.subChannel, notify);
     }
 
     function cleanupInstance(id) {
@@ -99,11 +102,9 @@ var notifications = (function ($, UTIL) {
 
     publicApi = {
 
-        animDuration : 400,
-        hideDelay : 3000,
-
-        init : function () {
+        init : function (opts) {
             if (!inited) {
+                $.extend(config, opts);
                 createHolder();
                 $.data(holder[0], 'notificationsInstance', this);
                 startListening();
