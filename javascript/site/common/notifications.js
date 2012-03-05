@@ -4,11 +4,13 @@ var notifications = (function ($, UTIL) {
         inited,
         publicApi,
         instances = {},
+        orderedLookup = [],
         config = {
             subChannel : '/notification',
             parentEl : document.body,
             animDuration : 400,
-            hideDelay : 3000
+            hideDelay : 3000,
+            limit : 5
         };
 
     // TODO: compare this approach with Object.create()
@@ -80,12 +82,20 @@ var notifications = (function ($, UTIL) {
         holder.remove();
     }
 
+    function limitShown() {
+        if (orderedLookup.length > config.limit) {
+            instances[orderedLookup.shift()].destroy();
+        }
+    }
+
     function notify(e, data) {
         var id = UTIL.generateId();
 
-        // FIXME: ordering cannot be trusted (in Chrome at least) :(
+        limitShown();
         // FIXME: 7 arguments! seriously?!
         instances[id] = new Notification(id, data.body, data.type, data.sticky, holder, config.animDuration, config.hideDelay);
+        // since we cannot trust hashes to be ordered, a separate array is used to track the notification order
+        orderedLookup.push(id);
     }
 
     function startListening() {
@@ -97,7 +107,9 @@ var notifications = (function ($, UTIL) {
     }
 
     function cleanupInstance(id) {
+        orderedLookup.splice(orderedLookup.indexOf(id), 1);
         delete instances[id];
+
     }
 
     publicApi = {
@@ -127,7 +139,7 @@ var notifications = (function ($, UTIL) {
                 stopListening();
                 for (var id in instances) {
                     instances[id].destroy(true);
-                    cleanupInstance(null, id);
+                    cleanupInstance(id);
                 }
                 startListening();
             }
@@ -147,7 +159,7 @@ var notifications = (function ($, UTIL) {
 
         // for debugging; should be removed later
         getInstances : function () {
-            return instances;
+            console.log(instances, orderedLookup);
         }
 
     };
