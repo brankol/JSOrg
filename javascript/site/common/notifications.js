@@ -60,15 +60,13 @@ var notifications = (function ($, UTIL) {
         hide : function () {
             this.el.slideUp(this.animDuration, $.proxy(this.destroy, this));
         },
-        destroy : function (isSilent) {
+        destroy : function () {
             this.hideBtn.unbind('click');
             clearTimeout(this.showTimeout);
             $.removeData(this.el[0], 'NotificationInstance');
             this.el.remove();
-            if (!isSilent) {
-                // notify of completion, provide id
-                cleanupInstance(this.id);
-            }
+            // notify of completion, provide id
+            cleanupInstance(this.id);
         }
     };
 
@@ -84,6 +82,7 @@ var notifications = (function ($, UTIL) {
 
     function limitShown() {
         if (orderedLookup.length > config.limit) {
+            console.log(orderedLookup.length, config.limit);
             instances[orderedLookup.shift()].destroy();
         }
     }
@@ -91,7 +90,7 @@ var notifications = (function ($, UTIL) {
     function notify(e, data) {
         var id = UTIL.generateId();
 
-        limitShown();
+        // limitShown();
         // FIXME: 7 arguments! seriously?!
         instances[id] = new Notification(id, data.body, data.type, data.sticky, holder, config.animDuration, config.hideDelay);
         // since we cannot trust hashes to be ordered, a separate array is used to track the notification order
@@ -109,7 +108,6 @@ var notifications = (function ($, UTIL) {
     function cleanupInstance(id) {
         orderedLookup.splice(orderedLookup.indexOf(id), 1);
         delete instances[id];
-
     }
 
     publicApi = {
@@ -138,8 +136,7 @@ var notifications = (function ($, UTIL) {
             if (inited) {
                 stopListening();
                 for (var id in instances) {
-                    instances[id].destroy(true);
-                    cleanupInstance(id);
+                    instances[id].destroy();
                 }
                 startListening();
             }
