@@ -29,7 +29,7 @@ APP.homepage = {
         // UTIL.subscribe('/sys/message', handleMsg);
         // UTIL.unsubscribe('/sys/message', handleMsg);
 
-        UTIL.publish('/notification', { body : 'homepage.overview loaded! NOT!', type : 'error'});
+        // UTIL.publish('/notification', { body : 'homepage.overview loaded! NOT!', type : 'error'});
 
         // example:
 
