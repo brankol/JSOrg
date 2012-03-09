@@ -6,7 +6,7 @@ var notifications = (function ($, UTIL) {
         instances = {},
         orderedLookup = [],
         config = {
-            subChannel : '/notification',
+            channel : '/notification',
             parentEl : document.body,
             animDuration : 400,
             hideDelay : 3000,
@@ -82,12 +82,11 @@ var notifications = (function ($, UTIL) {
 
     function limitShown() {
         if (orderedLookup.length > config.limit) {
-            console.log(orderedLookup.length, config.limit);
             instances[orderedLookup.shift()].destroy();
         }
     }
 
-    function notify(e, data) {
+    function notify(data) {
         var id = UTIL.generateId();
 
         // limitShown();
@@ -98,11 +97,11 @@ var notifications = (function ($, UTIL) {
     }
 
     function startListening() {
-        UTIL.subscribe(config.subChannel, notify);
+        $.subscribe(config.channel, notify);
     }
 
     function stopListening() {
-        UTIL.unsubscribe(config.subChannel, notify);
+        $.unsubscribe(config.channel, notify);
     }
 
     function cleanupInstance(id) {

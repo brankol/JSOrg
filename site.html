@@ -13,21 +13,11 @@
                     .notification.error .inner { background: red; color: white; }
                     .js_notification_hide { position: absolute; right: 0; top: 0; display: block; padding: 5px; cursor: pointer; }
     </style>
-
-    <!-- Perhaps bootstrap isn't the best name... -->
-    <script src="javascript/lib/bootstrap.js"></script>
-    <script>
-        APP.config.userId = '66';
-    </script>
+    <script src="javascript/lib/jquery.js"></script>
+    <script src="javascript/lib/require.js" data-main="javascript/site/main"></script>
 </head>
 <body data-module="homepage" data-feature="overview">
     <h1>new.js</h1>
     <p>Check the <code>console</code>!</p>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="javascript/lib/jquery.js"><\/script>')</script>
-    <script src="javascript/lib/util.js"></script>
-    <script src="javascript/site/common/notifications.js"></script>
-    <script src="javascript/site/app.js"></script>
 </body>
 </html>

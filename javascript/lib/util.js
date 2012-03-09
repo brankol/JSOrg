@@ -7,7 +7,7 @@ var UTIL = {
     // FIXME: perhaps switch to a proper pubsub solution?
     // the first argument in a subscribe callback should not be 'event'
     subscribe : function () {
-        UTIL.jQ.bind.apply(UTIL.jQ, arguments);
+        UTIL.jQ.bind.apply(UTIL.jQ, Array.prototype.slice.call(arguments, 1));
     },
 
     unsubscribe : function () {

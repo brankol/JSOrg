@@ -5,12 +5,12 @@ APP.common = {
     init: function () {
         // executed on each page
         notifications.init({
-            subChannel : '/notification',
+            channel : '/notification',
             animDuration : 300,
             hideDelay : 3500
         });
 
-        UTIL.publish('/notification', { body : 'common.init loaded!', type : 'info'});
+        jQuery.publish('/notification', { body : 'common.init loaded!', type : 'info'});
     }
 
 };
@@ -19,17 +19,17 @@ APP.homepage = {
 
     init : function () {
         // executed on every feature of this module
-        UTIL.publish('/notification', { body : 'Welcome, user #' + APP.config.userId + '!', type : 'success', sticky : true });
+        jQuery.publish('/notification', { body : 'Welcome, user #' + APP.config.userId + '!', type : 'success', sticky : true });
     },
 
     overview : function () {
         // function handleMsg(e, data) {
         //     console.log(data);
         // }
-        // UTIL.subscribe('/sys/message', handleMsg);
-        // UTIL.unsubscribe('/sys/message', handleMsg);
+        // jQuery.subscribe('/sys/message', handleMsg);
+        // jQuery.unsubscribe('/sys/message', handleMsg);
 
-        // UTIL.publish('/notification', { body : 'homepage.overview loaded! NOT!', type : 'error'});
+        // jQuery.publish('/notification', { body : 'homepage.overview loaded! NOT!', type : 'error'});
 
         // example:
 
