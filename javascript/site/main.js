@@ -1,3 +1,10 @@
+// require.config({
+//     baseUrl: 'javascript/',
+//     paths: {
+//         'text': 'lib/text',
+//     }
+// });
+
 require([
 
     'routes',
@@ -6,13 +13,22 @@ require([
 
 ], function (routes) {
 
-    console.log(routes);
+    var body = document.body,
+        module = body.getAttribute('data-module'),
+        feature = body.getAttribute('data-feature');
 
-    jQuery.subscribe('/msg', function (data) {
-        console.log(data);
-    });
+    function exec(module, feature) {
+        var ns = routes;
 
-    // config = pages[document.body.getAttribute('data-page')];
-    // config && require([ config ]);
+        if (typeof ns[module][feature] === 'string') {
+            require([ ns[module][feature] ]);
+        }
+    }
+
+    if (typeof routes === 'object' && routes !== null) {
+        exec(module, feature);
+    } else {
+        console.warn('No routes found!');
+    }
 
 });
