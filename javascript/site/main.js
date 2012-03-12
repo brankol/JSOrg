@@ -7,11 +7,12 @@
 
 require([
 
+    'common/init',
     'routes',
     '../lib/bootstrap',
     '../lib/jquery.channel'
 
-], function (routes) {
+], function (common, routes) {
 
     var body = document.body,
         module = body.getAttribute('data-module'),
@@ -25,10 +26,7 @@ require([
         }
     }
 
-    if (typeof routes === 'object' && routes !== null) {
-        exec(module, feature);
-    } else {
-        console.warn('No routes found!');
-    }
+    common.init();
+    exec(module, feature);
 
 });
