@@ -1,4 +1,4 @@
-var notifications = (function ($, UTIL) {
+define(function () {
 
     var holder,
         inited,
@@ -8,6 +8,9 @@ var notifications = (function ($, UTIL) {
         config = {
             channel : '/notification',
             parentEl : document.body,
+            holderClass : 'notification_holder',
+            animStart : 'slideDown',
+            animEnd : 'slideUp',
             animDuration : 400,
             hideDelay : 3000,
             limit : 5
@@ -47,7 +50,7 @@ var notifications = (function ($, UTIL) {
             } else {
 
                 if (!that.el.is(':visible')) {
-                    that.el.slideDown(that.animDuration, function () {
+                    that.el[config.animStart](that.animDuration, function () {
                         that.showTimeout = setTimeout($.proxy(that.hide, that), that.hideDelay);
                     });
                 } else {
@@ -58,7 +61,7 @@ var notifications = (function ($, UTIL) {
             }
         },
         hide : function () {
-            this.el.slideUp(this.animDuration, $.proxy(this.destroy, this));
+            this.el[config.animEnd](this.animDuration, $.proxy(this.destroy, this));
         },
         destroy : function () {
             this.hideBtn.unbind('click');
@@ -73,7 +76,8 @@ var notifications = (function ($, UTIL) {
     function createHolder() {
         // TODO: pull template out and consider a proper templating solution
         // TODO: test with screen readers!
-        holder = $('<div class="notification_holder" role="region" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>').prependTo(config.parentEl);
+        var tmpl = '<div class="{CLASS}" role="region" aria-live="polite" aria-relevant="additions text" aria-atomic="false"></div>';
+        holder = $(tmpl.replace('{CLASS}', config.holderClass)).prependTo(config.parentEl);
     }
 
     function destroyHolder() {
@@ -86,8 +90,13 @@ var notifications = (function ($, UTIL) {
         }
     }
 
+    // https://gist.github.com/1308368
+    function generateId(a, b) {
+        for(b=a='';a++<36;b+=a*51&52?(a^15?8^Math.random()*(a^20?16:4):4).toString(16):'-');return b;
+    }
+
     function notify(data) {
-        var id = UTIL.generateId();
+        var id = generateId();
 
         // limitShown();
         // FIXME: 7 arguments! seriously?!
@@ -162,4 +171,4 @@ var notifications = (function ($, UTIL) {
 
     return publicApi;
 
-}(jQuery, UTIL));
+});
