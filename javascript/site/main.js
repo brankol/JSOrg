@@ -10,7 +10,7 @@ require([
     'common/init',
     'routes',
     '../lib/bootstrap',
-    '../lib/jquery.channel'
+    '../lib/jquery/channel'
 
 ], function (common, routes) {
 
