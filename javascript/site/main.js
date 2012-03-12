@@ -1,5 +1,4 @@
 // require.config({
-//     baseUrl: 'javascript/',
 //     paths: {
 //         'text': 'lib/text',
 //     }
@@ -14,19 +13,19 @@ require([
 
 ], function (common, routes) {
 
-    var body = document.body,
-        module = body.getAttribute('data-module'),
-        feature = body.getAttribute('data-feature');
-
     function exec(module, feature) {
-        var ns = routes;
-
-        if (typeof ns[module][feature] === 'string') {
-            require([ ns[module][feature] ]);
+        if (typeof routes[module][feature] === 'string') {
+            require([ routes[module][feature] ]);
         }
     }
 
-    common.init();
-    exec(module, feature);
+    jQuery(document).ready(function () {
+        var body = document.body,
+            module = body.getAttribute('data-module'),
+            feature = body.getAttribute('data-feature');
+
+        common.init();
+        exec(module, feature);
+    });
 
 });
