@@ -7,7 +7,7 @@ define(function () {
         orderedLookup = [],
         config = {
             channel : '/notification',
-            parentEl : document.body,
+            parentEl : 'body',
             holderClass : 'notification_holder',
             animStart : 'slideDown',
             animEnd : 'slideUp',
