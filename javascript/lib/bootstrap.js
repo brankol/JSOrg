@@ -13,3 +13,5 @@ var CW = {},
 
 CW.formSchema = {};
 APP.config = {};
+APP.route = {};
+APP.module = {};

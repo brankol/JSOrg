@@ -1,10 +1,10 @@
 /*globals jQuery, APP, UTIL */
 
-APP.common = {
+APP.route.common = {
 
     init: function () {
         // executed on each page
-        notifications.init({
+        APP.module.notifications.init({
             subChannel : '/notification',
             animDuration : 300,
             hideDelay : 3500
@@ -15,7 +15,7 @@ APP.common = {
 
 };
 
-APP.homepage = {
+APP.route.homepage = {
 
     init : function () {
         // executed on every feature of this module

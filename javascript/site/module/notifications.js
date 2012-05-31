@@ -1,4 +1,4 @@
-var notifications = (function ($, UTIL) {
+APP.module.notifications = (function ($, UTIL) {
 
     var holder,
         inited,
