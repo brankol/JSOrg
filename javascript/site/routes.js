@@ -12,4 +12,3 @@ define({
         view : 'pages/recipe_view'
     }
 });
-
